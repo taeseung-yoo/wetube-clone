@@ -1,12 +1,11 @@
 export const recommendation = (req, res) => {
-  res.send("Recommended Videos.");
+  res.render("home", { pageTitle: "Home" });
 };
-
 export const see = (req, res) => {
-  return res.send(`Watch Video #${req.params.id}`);
+  res.render("watch", { pageTitle: "Watch" });
 };
 export const edit = (req, res) => {
-  return res.send(`Edit Video #${req.params.id}`);
+  res.render("edit", { pageTitle: "Edit" });
 };
 export const search = (req, res) => {
   res.send("Search");
