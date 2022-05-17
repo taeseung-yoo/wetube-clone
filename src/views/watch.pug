@@ -1,4 +1,4 @@
-extends base.pug 
+extends base
 include mixins/video
 
 block content 
@@ -6,4 +6,6 @@ block content
         p=video.description
         small=video.createdAt
     a(href=`${video.id}/edit`) Edit Video &rarr;
+    br
+    a(href=`${video.id}/delete`) Delete Video &rarr;
     
