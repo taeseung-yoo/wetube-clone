@@ -135,8 +135,78 @@ export const logout = (req, res) => {
   req.session.destroy();
   return res.redirect("/");
 };
-export const edit = (req, res) => {
-  res.send("Edit User");
+export const getEdit = (req, res) => {
+  return res.render("edit-profile", { pageTitle: "Edit Profile" });
+};
+export const postEdit = async (req, res) => {
+  const {
+    session: {
+      user: { _id, avatarUrl, email: sessionEmail, username: sessionUsername },
+    },
+    body: { name, email, username, location },
+    file,
+  } = req;
+  let exist = null;
+  if (sessionUsername !== username) {
+    const exists = await User.exists({ username });
+    if (exists) {
+      exist = "username";
+    }
+  }
+  if (sessionEmail !== email) {
+    const exists = await User.exists({ email });
+    if (exists) {
+      exist = "email";
+    }
+  }
+  if (exist) {
+    return res.status(400).render("edit-profile", {
+      pageTitle: "Edit Profile",
+      errorMessage: `This ${exist} is already taken.`,
+    });
+  }
+  const updatedUser = await User.findByIdAndUpdate(
+    _id,
+    {
+      avatarUrl: file ? file.path : avatarUrl,
+      name,
+      email,
+      username,
+      location,
+    },
+    { new: true }
+  );
+  req.session.user = updatedUser;
+  return res.redirect("/users/edit");
+};
+export const getChangePassword = (req, res) => {
+  return res.render("change-password", { pageTitle: "Change Password" });
+};
+export const postChangePassword = async (req, res) => {
+  const {
+    session: {
+      user: { _id, password },
+    },
+    body: { oldPassword, newPassword, newPassword2 },
+  } = req;
+  const ok = await bcrypt.compare(oldPassword, password);
+  if (!ok) {
+    return res.status(400).render("change-password", {
+      pageTitle: "Change Password",
+      errorMessage: "Wrong Old Password",
+    });
+  }
+  if (newPassword !== newPassword2) {
+    return res.status(400).render("change-password", {
+      pageTitle: "Change Password",
+      errorMessage: "Password confirmation does not match.",
+    });
+  }
+  const user = await User.findOne({ _id });
+  user.password = newPassword;
+  await user.save();
+  req.session.user.password = user.password;
+  return res.redirect("/users/logout");
 };
 export const see = (req, res) => {
   res.send("See User");
