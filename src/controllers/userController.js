@@ -180,7 +180,7 @@ export const postEdit = async (req, res) => {
   return res.redirect("/users/edit");
 };
 export const getChangePassword = (req, res) => {
-  return res.render("change-password", { pageTitle: "Change Password" });
+  return res.render("users/change-password", { pageTitle: "Change Password" });
 };
 export const postChangePassword = async (req, res) => {
   const {
@@ -208,6 +208,14 @@ export const postChangePassword = async (req, res) => {
   req.session.user.password = user.password;
   return res.redirect("/users/logout");
 };
-export const see = (req, res) => {
-  res.send("See User");
+export const see = async (req, res) => {
+  const { id } = req.params;
+  const user = await User.findById(id).populate("videos");
+  if (!user) {
+    return res.status(404).render("404", { pageTitle: "User Not Found" });
+  }
+  return res.render("users/profile", {
+    pageTitle: user.name,
+    user,
+  });
 };
