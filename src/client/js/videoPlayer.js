@@ -75,6 +75,13 @@ const handleTimeUpdate = () => {
   timeline.value = Math.floor(video.currentTime);
 };
 
+const handleVideoEnded = () => {
+  const id = videoContainer.dataset.videoid;
+  fetch(`/api/videos/${id}/view`, {
+    method: "POST",
+  });
+};
+
 const handleTimelineChange = (event) => {
   const {
     target: { value },
@@ -114,11 +121,12 @@ const handleMouseLeave = () => {
 
 playBtn.addEventListener("click", handlePlayClick);
 video.addEventListener("click", handlePlayClick);
-document.addEventListener("keydown", handleSpaceabarPress);
+document.addEventListener("keyup", handleSpaceabarPress);
 muteBtn.addEventListener("click", handleMuteClick);
 volumeRange.addEventListener("input", handleVolumeChange);
 video.addEventListener("loadeddata", handleLoadedMetadata);
 video.addEventListener("timeupdate", handleTimeUpdate);
+video.addEventListener("ended", handleVideoEnded);
 videoContainer.addEventListener("mousemove", handleMouseMove);
 videoContainer.addEventListener("mouseleave", handleMouseLeave);
 timeline.addEventListener("input", handleTimelineChange);
