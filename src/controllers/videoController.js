@@ -161,3 +161,14 @@ export const deleteComment = async (req, res) => {
   await Comment.findByIdAndDelete(id);
   return res.sendStatus(200);
 };
+export const updateComment = async (req, res) => {
+  const {
+    params: { id },
+    body: { text },
+  } = req;
+  const comment = await Comment.findById(id);
+  comment.text = text;
+  await comment.save();
+
+  return res.sendStatus(200);
+};

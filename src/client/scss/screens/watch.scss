@@ -33,8 +33,13 @@
     background-color: white;
     color: black;
     margin-bottom: 10px;
-    #comments__delete-btn {
+    #comments__delete-btn,
+    #comments__update-btn {
       cursor: pointer;
+      opacity: 0.4;
+      &:hover {
+        opacity: 1;
+      }
     }
   }
 }
