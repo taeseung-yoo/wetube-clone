@@ -29,12 +29,13 @@ block content
             a(href=`${video.id}/edit`) Edit Video &rarr;
             br
             a(href=`${video.id}/delete`) Delete Video &rarr;
-    if loggedIn
-        div.video__add-comments
-            form.video__comment-form#commentForm
-                textarea(cols="30", rows="10", placeholder="Write a nice commment...")
-                button Add Comment
     div.video__comments
+        span 댓글 #{video.comments.length}개
+        if loggedIn
+            div.video__add-comments
+                form.video__comment-form#commentForm
+                    textarea(cols="30", rows="10", placeholder="Write a nice commment...")
+                    button Add Comment
         ul 
             each comment in video.comments.reverse()
                 li.video__comment(data-commentid=comment._id)

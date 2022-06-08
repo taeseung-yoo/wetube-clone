@@ -5,6 +5,9 @@ const updateBtn = document.querySelectorAll("#comments__update-btn");
 
 const addComment = (text, newCommentId) => {
   const videoComments = document.querySelector(".video__comments ul");
+  const countSpan = document.querySelector(".video__comments span");
+  const countComments = parseInt(countSpan.innerText.slice(3, -1));
+  countSpan.innerText = `댓글 ${countComments + 1}개`;
   const newComment = document.createElement("li");
   newComment.className = "video__comment";
   newComment.dataset.commentid = newCommentId;
@@ -61,6 +64,9 @@ const handleDeleteComment = async (event) => {
     method: "DELETE",
   });
   if (response.status === 200) {
+    const countSpan = document.querySelector(".video__comments span");
+    const countComments = parseInt(countSpan.innerText.slice(3, -1));
+    countSpan.innerText = `댓글 ${countComments - 1}개`;
     comment.remove();
   }
 };
