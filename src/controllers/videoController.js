@@ -64,13 +64,27 @@ export const deleteVideo = async (req, res) => {
       user: { _id },
     },
   } = req;
-  const video = await Video.findById(id);
+  const video = await Video.findById(id).populate({
+    path: "owner",
+    populate: {
+      path: "videos comments",
+    },
+  });
   if (!video) {
     return res.status(404).render("404", { pageTitle: "Video Not Found" });
   }
-  if (String(video.owner) !== String(_id)) {
+  if (String(video.owner._id) !== String(_id)) {
     return res.status(403).redirect(`/videos/${id}`);
   }
+  const commentsIdArray = video.comments;
+  await Comment.deleteMany({
+    _id: { $in: commentsIdArray },
+  });
+  video.owner.comments = video.owner.comments.filter(
+    (comment) => !commentsIdArray.includes(comment._id)
+  );
+  video.owner.videos.pull({ _id: id });
+  video.owner.save();
   await Video.findByIdAndDelete(id);
   return res.redirect("/");
 };
