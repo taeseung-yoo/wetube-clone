@@ -4,7 +4,7 @@ include ../mixins/comment
 
 block content 
     div.profile__data
-        if user.socialLoginOnly
+        if isHeroku
             img(src=user.avatarUrl,crossorigin).avatar
         else
             img(src="/" + user.avatarUrl,crossorigin).avatar
