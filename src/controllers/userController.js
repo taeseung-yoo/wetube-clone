@@ -59,6 +59,7 @@ export const postLogin = async (req, res) => {
   }
   req.session.loggedIn = true;
   req.session.user = user;
+  req.flash("info", "Welcome");
   return res.redirect("/");
 };
 export const startGithubLogin = (req, res) => {
@@ -126,6 +127,7 @@ export const finishGithubLogin = async (req, res) => {
     }
     req.session.loggedIn = true;
     req.session.user = user;
+    req.flash("info", "Welcome");
     return res.redirect("/");
   } else {
     return res.redirect("/login");
@@ -181,6 +183,7 @@ export const postEdit = async (req, res) => {
     { new: true }
   );
   req.session.user = updatedUser;
+  req.flash("success", "Changes Saved");
   return res.redirect("/users/edit");
 };
 export const getChangePassword = (req, res) => {
@@ -214,7 +217,7 @@ export const postChangePassword = async (req, res) => {
   user.password = newPassword;
   await user.save();
   req.session.user.password = user.password;
-  req.flash("info", "Password updated");
+  req.flash("info", "Password Updated");
   return res.redirect("/users/logout");
 };
 export const see = async (req, res) => {
@@ -223,8 +226,7 @@ export const see = async (req, res) => {
     .populate({
       path: "comments",
       populate: {
-        path: "video",
-        model: "Video",
+        path: "video owner",
       },
     })
     .populate({

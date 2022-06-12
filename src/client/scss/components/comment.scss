@@ -1,0 +1,89 @@
+.video__comments {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 0 auto;
+  padding-top: 30px;
+  border-top: 1px solid gray;
+  ul {
+    margin-top: 15px;
+  }
+  img {
+    width: 40px;
+    border-radius: 50%;
+    margin-right: 15px;
+  }
+  .video__add-comments {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    form {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      input {
+        width: 1000px;
+        border: none;
+        border-radius: 0;
+        &:focus {
+          border-bottom: 1px solid white;
+        }
+      }
+      button {
+        height: 50px;
+        border-radius: 10px;
+        background-color: #3ea6ff;
+      }
+    }
+  }
+  .comments__fake-avatar {
+    font-size: 40px;
+    transform: translateX(-7px);
+  }
+  .video__comment {
+    display: flex;
+    justify-content: space-between;
+    color: white;
+    margin-bottom: 20px;
+
+    .comments__column {
+      display: flex;
+      align-items: center;
+      padding-right: 15px;
+
+      .comment__name {
+        font-size: 18px;
+        margin-right: 8px;
+      }
+      .comment__date {
+        font-size: 12px;
+        opacity: 0.5;
+      }
+      .comment__text {
+        display: block;
+        font-size: 18px;
+        margin-top: 5px;
+      }
+      .comment__new-text {
+        margin-top: 5px;
+        width: 1000px;
+        border: none;
+        border-radius: 0;
+        &:focus {
+          border-bottom: 1px solid white;
+        }
+      }
+    }
+    #comments__delete-btn,
+    #comments__update-btn {
+      cursor: pointer;
+      font-size: 20px;
+      margin-left: 5px;
+      opacity: 0.4;
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+}

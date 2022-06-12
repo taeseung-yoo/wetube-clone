@@ -10,7 +10,10 @@ export const home = async (req, res) => {
 };
 export const watch = async (req, res) => {
   const { id } = req.params;
-  const video = await Video.findById(id).populate("owner").populate("comments");
+  const video = await Video.findById(id).populate("owner").populate({
+    path: "comments",
+    populate: "owner",
+  });
   if (!video) {
     return res.render("404", { pageTitle: "Video Not Found" });
   }
@@ -54,7 +57,7 @@ export const postEdit = async (req, res) => {
     description,
     hashtags: Video.formatHashtags(hashtags),
   });
-  req.flash("success", "Changes saved.");
+  req.flash("success", "Changes Saved");
   return res.redirect(`/videos/${id}`);
 };
 export const deleteVideo = async (req, res) => {
@@ -74,18 +77,21 @@ export const deleteVideo = async (req, res) => {
     return res.status(404).render("404", { pageTitle: "Video Not Found" });
   }
   if (String(video.owner._id) !== String(_id)) {
+    req.flash("error", "You are not the owner of the video");
     return res.status(403).redirect(`/videos/${id}`);
   }
   const commentsIdArray = video.comments;
   await Comment.deleteMany({
     _id: { $in: commentsIdArray },
   });
+
   video.owner.comments = video.owner.comments.filter(
     (comment) => !commentsIdArray.includes(comment._id)
   );
   video.owner.videos.pull({ _id: id });
   video.owner.save();
   await Video.findByIdAndDelete(id);
+  req.flash("success", "Video Deleted");
   return res.redirect("/");
 };
 export const getUpload = (req, res) => {
@@ -111,6 +117,7 @@ export const postUpload = async (req, res) => {
     const user = await User.findById(_id);
     user.videos.push(newVideo._id);
     user.save();
+    req.flash("success", "Upload Success");
     return res.redirect("/");
   } catch (error) {
     return res.status(400).render("upload", {
@@ -189,6 +196,7 @@ export const deleteComment = async (req, res) => {
     return res.sendStatus(404);
   }
   if (String(user._id) !== String(comment.owner._id)) {
+    req.flash("error", "You are not the owner of the comment");
     return res.sendStatus(403);
   }
   comment.owner.comments.pull({ _id: id });
@@ -203,10 +211,17 @@ export const updateComment = async (req, res) => {
   const {
     params: { id },
     body: { text },
+    session: { user },
   } = req;
-  const comment = await Comment.findById(id);
+  const comment = await Comment.findById(id).populate("owner");
+  if (!comment) {
+    return res.sendStatus(404);
+  }
+  if (String(user._id) !== String(comment.owner._id)) {
+    req.flash("error", "You are not the owner of the comment");
+    return res.sendStatus(403);
+  }
   comment.text = text;
   await comment.save();
-
   return res.sendStatus(200);
 };

@@ -1,5 +1,6 @@
 extends base
 include mixins/video
+include mixins/comment
 
 block content 
     div#videoContainer(data-videoid=video._id)
@@ -22,30 +23,43 @@ block content
                     i.fas.fa-expand
     div.video__data
         p.video__title=video.title
-        small.video__owner Uploaded by 
-            a(href=`/users/${video.owner._id}`)=video.owner.name
-        small.video__createdAt=new Date(video.createdAt).toLocaleDateString("ko-kr", {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})
+        div 
+            span.video__views #{video.meta.views} 회 / 
+            span.video__createdAt=new Date(video.createdAt).toLocaleDateString("ko-kr", {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})
+        div.video__owner
+            span Uploaded By
+            div.video__owner-profile
+                if video.owner.socialLoginOnly
+                    a(href=`/users/${video.owner._id}`)
+                        img(src=video.owner.avatarUrl,crossorigin) 
+                else
+                    a(href=`/users/${video.owner._id}`)
+                        img(src="/" + video.owner.avatarUrl,crossorigin)
+                a(href=`/users/${video.owner._id}`)=video.owner.name
         if String(video.owner._id) === String(loggedInUser._id)
-            a(href=`${video.id}/edit`) Edit Video &rarr;
-            br
-            a(href=`${video.id}/delete`) Delete Video &rarr;
+            div.video__manage
+                a(href=`${video.id}/edit`)
+                    div Edit Video ➡️
+                a(href=`${video.id}/delete`)
+                    div Delete Video ➡️
     div.video__comments
         span 댓글 #{video.comments.length}개
         if loggedIn
             div.video__add-comments
+                if !loggedInUser.avatarUrl
+                    span.comments__fake-avatar 😀
+                else
+                    if loggedInUser.socialLoginOnly
+                        img(src=loggedInUser.avatarUrl,crossorigin).header__avatar
+                    else
+                        img(src="/" + loggedInUser.avatarUrl,crossorigin).header__avatar
                 form.video__comment-form#commentForm
-                    textarea(cols="30", rows="10", placeholder="Write a nice commment...")
+                    input(type="text", cols="30", rows="10", placeholder="Write a nice commment...")
                     button Add Comment
         ul 
             each comment in video.comments.reverse()
-                li.video__comment(data-commentid=comment._id)
-                    div.comments__column
-                        i.fas.fa-comment 
-                        span #{comment.text}
-                    if String(comment.owner) === String(loggedInUser._id)
-                        div.comments__column
-                            span#comments__update-btn ✏️
-                            span#comments__delete-btn ❌
+                +comment(comment)
+
 block scripts 
     script(src="/static/js/videoPlayer.js") 
     if loggedIn

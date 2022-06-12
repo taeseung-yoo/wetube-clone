@@ -1,9 +1,10 @@
 extends ../base
 include ../mixins/video
+include ../mixins/comment
 
 block content 
     div.profile__data
-        if loggedInUser.socialLoginOnly
+        if user.socialLoginOnly
             img(src=user.avatarUrl,crossorigin).avatar
         else
             img(src="/" + user.avatarUrl,crossorigin).avatar
@@ -13,13 +14,9 @@ block content
             +video(video)
         else
             span.empty__message No videos found 
-    div.my-comments
+    div.video__comments
+        h5.profile__comments This Channel's Comments
+        span 댓글 #{user.comments.length}개
         ul 
-            each comment in user.comments.reverse() 
-                li
-                    div.my-comments__title
-                        a(href=`/videos/${comment.video._id}`)
-                            span=comment.video.title
-                        span=new Date(comment.createdAt).toLocaleDateString("ko-kr", {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})
-                    div.my-comments__comment
-                        span=comment.text
+            each comment in user.comments.reverse()
+                +comment(comment)

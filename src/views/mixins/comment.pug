@@ -1,0 +1,23 @@
+mixin comment(comment)
+    li.video__comment(data-commentid=comment._id)
+        div.comments__column
+            if !comment.owner.avatarUrl
+                span.comments__fake-avatar 😀
+            else
+                if comment.owner.socialLoginOnly
+                    a(href=`/users/${comment.owner._id}`)
+                        img(src=comment.owner.avatarUrl,crossorigin) 
+                else
+                    a(href=`/users/${comment.owner._id}`)
+                        img(src="/" + comment.owner.avatarUrl,crossorigin)
+            div.comment__info
+                span.comment__name=comment.owner.name 
+                span.comment__date=new Date(comment.createdAt).toLocaleDateString("ko-kr", {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})
+                span.comment__text=comment.text
+        if (video) && String(comment.owner._id) === String(loggedInUser._id)
+            div.comments__column
+                span#comments__update-btn ✏️
+                span#comments__delete-btn ❌
+        if (user)
+            a(href=`/videos/${comment.video._id}`) 
+                span Go to Video ➡️

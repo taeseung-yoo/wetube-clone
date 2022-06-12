@@ -3,42 +3,10 @@ const form = document.querySelector("#commentForm");
 const deleteBtn = document.querySelectorAll("#comments__delete-btn");
 const updateBtn = document.querySelectorAll("#comments__update-btn");
 
-const addComment = (text, newCommentId) => {
-  const videoComments = document.querySelector(".video__comments ul");
-  const countSpan = document.querySelector(".video__comments span");
-  const countComments = parseInt(countSpan.innerText.slice(3, -1));
-  countSpan.innerText = `댓글 ${countComments + 1}개`;
-  const newComment = document.createElement("li");
-  newComment.className = "video__comment";
-  newComment.dataset.commentid = newCommentId;
-  const div = document.createElement("div");
-  div.className = "comments__column";
-  const div2 = document.createElement("div");
-  div2.className = "comments__column";
-  const icon = document.createElement("i");
-  icon.className = "fas fa-comment";
-  const span = document.createElement("span");
-  span.innerText = ` ${text}`;
-  const span2 = document.createElement("span");
-  span2.innerText = "✏️";
-  const span3 = document.createElement("span");
-  span3.innerText = "❌";
-  span3.addEventListener("click", handleDeleteComment);
-  span2.id = "comments__update-btn";
-  span3.id = "comments__delete-btn";
-  div.appendChild(icon);
-  div.appendChild(span);
-  div2.appendChild(span2);
-  div2.appendChild(span3);
-  newComment.appendChild(div);
-  newComment.appendChild(div2);
-  videoComments.prepend(newComment);
-};
-
 const handleSubmit = async (event) => {
   event.preventDefault();
-  const textarea = form.querySelector("textarea");
-  const text = textarea.value;
+  const input = form.querySelector("input");
+  const text = input.value;
   const id = videoContainer.dataset.videoid;
   if (text === "") {
     return;
@@ -51,9 +19,7 @@ const handleSubmit = async (event) => {
     body: JSON.stringify({ text }),
   });
   if (response.status === 201) {
-    textarea.value = "";
-    const { newCommentId } = await response.json();
-    addComment(text, newCommentId);
+    location.reload();
   }
 };
 
@@ -73,8 +39,8 @@ const handleDeleteComment = async (event) => {
 
 const handleConfirmUpdate = async (event) => {
   const comment = event.target.parentElement.parentElement;
-  const textarea = comment.querySelector("textarea");
-  const text = textarea.value;
+  const input = comment.querySelector("input");
+  const text = input.value;
   const commentId = comment.dataset.commentid;
   if (text === "") {
     return;
@@ -87,10 +53,11 @@ const handleConfirmUpdate = async (event) => {
     body: JSON.stringify({ text }),
   });
   if (response.status === 200) {
-    const textSpan = comment.querySelector(".comments__column textarea");
+    const textSpan = comment.querySelector(".comment__new-text");
     const span = document.createElement("span");
     const clickedUpdateBtn = event.target;
     span.innerText = text;
+    span.className = "comment__text";
     textSpan.parentElement.appendChild(span);
     textSpan.remove();
     clickedUpdateBtn.innerText = "✏️";
@@ -102,12 +69,13 @@ const handleConfirmUpdate = async (event) => {
 const handleUpdateComment = (event) => {
   const clickedUpdateBtn = event.target;
   const comment = clickedUpdateBtn.parentElement.parentElement;
-  const textSpan = comment.querySelector(".comments__column span");
-  const input = document.createElement("textarea");
+  const textSpan = comment.querySelector(".comment__text");
+  const input = document.createElement("input");
   input.type = "text";
   input.required = true;
   input.placeholder = "Write a new commment...";
   input.value = textSpan.innerText;
+  input.className = "comment__new-text";
   textSpan.parentElement.appendChild(input);
   textSpan.remove();
   clickedUpdateBtn.innerText = "✔️";
