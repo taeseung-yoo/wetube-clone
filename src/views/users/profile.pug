@@ -4,7 +4,7 @@ include ../mixins/comment
 
 block content 
     div.profile__data
-        if !loggedInUser.avatarUrl
+        if !user.avatarUrl
             span.profile__fake-avatar 😀
         else
             if isHeroku
