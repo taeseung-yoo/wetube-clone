@@ -4,12 +4,8 @@ mixin comment(comment)
             if !comment.owner.avatarUrl
                 span.comments__fake-avatar 😀
             else
-                if comment.owner.socialLoginOnly
-                    a(href=`/users/${comment.owner._id}`)
-                        img(src=comment.owner.avatarUrl,crossorigin) 
-                else
-                    a(href=`/users/${comment.owner._id}`)
-                        img(src="/" + comment.owner.avatarUrl,crossorigin)
+                a(href=`/users/${comment.owner._id}`)
+                    img(src=comment.owner.avatarUrl,crossorigin) 
             div.comment__info
                 span.comment__name=comment.owner.name 
                 span.comment__date=new Date(comment.createdAt).toLocaleDateString("ko-kr", {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'})

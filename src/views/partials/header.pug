@@ -19,10 +19,7 @@ header
                         if !loggedInUser.avatarUrl
                             span 😀
                         else
-                            if loggedInUser.socialLoginOnly
-                                img(src=loggedInUser.avatarUrl,crossorigin).header__avatar
-                            else
-                                img(src="/" + loggedInUser.avatarUrl,crossorigin).header__avatar
+                            img(src=loggedInUser.avatarUrl,crossorigin).header__avatar
             else  
                 li
                     a(href="/login") Log In
