@@ -37,10 +37,6 @@
       }
     }
   }
-  .comments__fake-avatar {
-    font-size: 40px;
-    transform: translateX(-7px);
-  }
   .video__comment {
     display: flex;
     justify-content: space-between;
@@ -86,4 +82,8 @@
       }
     }
   }
+}
+.comments__fake-avatar {
+  font-size: 40px;
+  transform: translateX(-7px);
 }
