@@ -29,8 +29,12 @@ block content
         div.video__owner
             span Uploaded By
             div.video__owner-profile
-                a(href=`/users/${video.owner._id}`)
-                    img(src=video.owner.avatarUrl,crossorigin) 
+                if isHeroku
+                    a(href=`/users/${video.owner._id}`)
+                        img(src=video.owner.avatarUrl,crossorigin) 
+                else
+                    a(href=`/users/${video.owner._id}`)
+                        img(src="/" + video.owner.avatarUrl,crossorigin)
                 a(href=`/users/${video.owner._id}`)=video.owner.name
         if String(video.owner._id) === String(loggedInUser._id)
             div.video__manage
@@ -45,7 +49,10 @@ block content
                 if !loggedInUser.avatarUrl
                     span.comments__fake-avatar 😀
                 else
-                    img(src=loggedInUser.avatarUrl,crossorigin).header__avatar
+                    if isHeroku
+                        img(src=loggedInUser.avatarUrl,crossorigin).header__avatar
+                    else
+                        img(src="/" + loggedInUser.avatarUrl,crossorigin).header__avatar
                 form.video__comment-form#commentForm
                     input(type="text", cols="30", rows="10", placeholder="Write a nice commment...")
                     button Add Comment
