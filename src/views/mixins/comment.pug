@@ -2,7 +2,8 @@ mixin comment(comment)
     li.video__comment(data-commentid=comment._id)
         div.comments__column
             if !comment.owner.avatarUrl
-                span.comments__fake-avatar 😀
+                a(href=`/users/${comment.owner._id}`)
+                    span.comments__fake-avatar 😀
             else
                 if isHeroku
                     a(href=`/users/${comment.owner._id}`)

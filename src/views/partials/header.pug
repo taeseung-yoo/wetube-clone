@@ -17,7 +17,7 @@ header
                 li
                     a(href=`/users/${loggedInUser._id}`)
                         if !loggedInUser.avatarUrl
-                            span 😀
+                            span.header__fake-avatar 😀
                         else
                             if isHeroku
                                 img(src=loggedInUser.avatarUrl,crossorigin).header__avatar
